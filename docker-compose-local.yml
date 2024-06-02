@@ -39,6 +39,7 @@ services:
       - "14330:1433"
     volumes:
       - mssql_data:/var/lib/mssql/data
+#Connection string will look like this - "Server=mssqldbcontainer,1433;Database=RealTimeChatDb;User Id=sa;Password=hitherefolks@007;Encrypt=True;TrustServerCertificate=True"
 
 volumes:
   mssql_data:

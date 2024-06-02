@@ -1,0 +1,75 @@
+# THIS IS THE COMPOSE FILE WHICH CONTAINS CONFIGURATIONS OF ALL THE SERVICES
+# THIS COMPOSE WILL BE USED TO START ALL THE SERVICES FOR THE FIRST TIME
+# COMMAND TO DEPLOY THIS STACK - sudo docker stack deploy -c <compose_file_name> -d --with-registry-auth <stack name>
+
+version: '3.9' # Choose a version that supports docker swarm
+services:
+
+  # FRONTEND SERVICES
+
+  frontend_blue:
+    image: saquibmansuri30/chat-application:frontend-latest # This image will be only used for the first deployment
+    env_file:
+      - fe.env # This file contains environment variables for frontend application
+    deploy:
+      mode: replicated
+      replicas: 1 # Set this to desired number of tasks
+    ports:
+      - "4200:80" # Host port should not be clashing with any other port on the machine
+
+  frontend_green:
+    image: saquibmansuri30/chat-application:frontend-latest # This image will be only used for the first deployment
+    env_file:
+      - fe.env # This file contains environment variables for frontend application
+    deploy:
+      mode: replicated
+      replicas: 1 # Set this to desired number of tasks
+    ports:
+      - "4201:80" # Host port should not be clashing with any other port on the machine
+
+  ###################################
+
+  # BACKEND SERVICES
+
+  backend_blue:
+    image: saquibmansuri30/chat-application:backend-latest #This image will be only used for the first deployment
+    env_file:
+      - be.env # This file contains environment variables for backend application
+    deploy:
+      mode: replicated
+      replicas: 1 # Set this to desired number of tasks
+    ports:
+      - "7218:80" # Host port should not be clashing with any other port on the machine
+
+  backend_green:
+    image: saquibmansuri30/chat-application:backend-latest #This image will be only used for the first deployment
+    env_file:
+      - be.env # This file contains environment variables for backend application
+    deploy:
+      mode: replicated
+      replicas: 1 # Set this to desired number of tasks
+    ports:
+      - "7219:80" # Host port should not be clashing with any other port on the machine
+
+  ###################################
+
+  # MSSQL SERVER SERVICE 
+  # NOTE: FOR PRODUCTION ENVIRONMENT, USE CLOUD MANAGED DATABASES, THIS MSSQL CONTAINER IS NOT IDEAL FOR PROD ENVIRONMENT, THIS IS ONLY IDEAL FOR DEV ENVIRONMENT OR TESTING
+  # I AM USING THIS DB CONTAINER JUST FOR THE PURPOSE OF DEMONSTRATION
+
+  mssqldb:
+    image: mcr.microsoft.com/mssql/server:2019-latest # This is a free and lightweight version of mssql, only for dev environment or testing
+    environment:
+      SA_PASSWORD: "hitherefolks@007" # This is the password for mssql server admin named - 'sa'
+      ACCEPT_EULA: "Y" # Accepts the End User License Agreement
+    deploy:
+      mode: replicated
+      replicas: 1 # Set this to desired number of tasks, 1 db is enough for our backend application
+    ports:
+      - "1433:1433" # Host port should not be clashing with any other port on the machine
+    volumes:
+      - mssql_data:/var/lib/mssql/data # Volume mounting
+
+volumes:
+  mssql_data:
+    driver: local
