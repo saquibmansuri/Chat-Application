@@ -1,0 +1,94 @@
+<div class="chat">
+    <div class="no-conversation-message" *ngIf="!messagesFound">
+        No conversation found.
+    </div>
+
+    <div class="user-chat" *ngIf="messagesFound" #userChat (scroll)="onScroll(userChat)">
+
+        <div *ngFor="let eachMessage of messages" class="messages">
+            <div *ngIf="!eachMessage.isFile" class="text-chat">
+                <li *ngIf="eachMessage.isEditing==false" (contextmenu)="openContextMenu($event, eachMessage)"
+                    [ngClass]="['message-block', eachMessage.senderId == loggedInUserId ? 'sentClass' : 'receivedClass']">
+
+                    {{eachMessage.content}}
+
+                </li>
+            </div>
+            <div *ngIf="eachMessage.isFile" class="text-chat">
+                <li (contextmenu)="openContextMenu($event, eachMessage)" [ngClass]="['file-block', eachMessage.senderId == loggedInUserId ? 'sentClass' : 'receivedClass']">
+
+                    <div [ngSwitch]="eachMessage.contentType">
+                        <div class="file">
+                            <div class="title">
+                                <img *ngSwitchCase="'image/png'" src="../../../../assets/Logos/png.png"
+                                    class="file-logos">
+                                <img *ngSwitchCase="'application/pdf'" src="../../../../assets/Logos/pdf.png"
+                                    class="file-logos">
+                                <div>{{eachMessage.fileName}}</div>
+                            </div>
+                            <i class="fa-regular fa-circle-down" (click) = "onDownload(eachMessage.fileId, eachMessage.fileName)"></i>
+                        </div>
+
+                        <div class="caption">{{eachMessage.caption}}</div>
+                    </div>
+
+                </li>
+            </div>
+
+            <li *ngIf="eachMessage.isEditing==true"
+                [ngClass]="['message-block', eachMessage.senderId == loggedInUserId ? 'sentClass' : 'receivedClass']">
+
+                <form [formGroup]="editForm">
+                    <input formControlName="editedMessage" class="editInput">
+                    <button type="submit" (click)="onSaveChanges()" class="optionButton">
+                        Save
+                    </button>
+
+                    <button (click)="onCancelChanges()" class="optionButton">
+                        Cancel
+                    </button>
+                </form>
+            </li>
+        </div>
+
+        <div *ngIf="contextMenuVisible" [style.left.px]="contextMenuX" [style.top.px]="contextMenuY"
+            class="context-menu">
+
+
+            <li (click)="onEditMessage()" class="option">Edit</li>
+            <li (click)="onDeleteMessage()" class="option">Delete</li>
+
+        </div>
+    </div>
+   
+    <div class="message-box-container">
+        <form class="message-box" [formGroup]="sendForm">
+            <div class="input-file">
+                <div class="input-container">
+                    <input placeholder="Message" class="input" formControlName="message">
+                </div>
+                <div *ngIf="selectedFile" class="selectedFile">
+                    
+                    <div class="fileName">
+                        <div [ngSwitch]="selectedFile.type">
+                            <img *ngSwitchCase="'image/png'" src="../../../../assets/Logos/png.png"
+                            class="file-logos">
+                             <img *ngSwitchCase="'application/pdf'" src="../../../../assets/Logos/pdf.png"
+                            class="file-logos">
+                        </div>
+                        <div>
+                            {{selectedFile.name}}
+                        </div>
+                        <i class="fa-solid fa-xmark" (click)="onDelete()"></i>
+                    </div>
+                </div>
+            </div>
+           
+            <button id="attachButton" (click)="attachFile()">Attach</button>
+            <input type="file" #fileInput id="fileInput" class="file-attach" formControlName="file" accept=".jpg, .png, .pdf, .jpeg" (change)="onFileSelected($event)">
+            <button type="submit" (click)="onSendMessage()" class="sendButton">Send</button>
+        </form>
+    </div>
+    
+
+</div>

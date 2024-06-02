@@ -1,0 +1,138 @@
+body {
+    height: 100vh;
+}
+
+.navBar {
+    background-color: rgb(43, 43, 43);
+    height: 70px;
+    margin: -10px;
+    /* position: fixed; */
+}
+
+.button {
+    float: right;
+    margin-right: 40px;
+    margin-top: 22px;
+    padding: 5px 20px;
+}
+
+.userName {
+    font-size: 20px;
+    padding: 10px 20px;
+    width: 15%;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(230, 230, 230);
+    margin: 0px -10px
+}
+
+.search {
+    font-size: 20px;
+    padding: 10px 45px;
+}
+
+.search input {
+    border-radius: 5px;
+    padding: 5px 10px;
+    /* width: 100%; */
+    width: 300px;
+}
+
+.search button {
+    background-color: black;
+    color: white;
+    margin-left: 10px;
+    padding: 5px 10px;
+}
+
+.userList {
+    background-color: rgb(43, 43, 43);
+    width: 150%;
+    height: 510px;
+    margin-left: -10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.userDash {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat {
+    background-color: rgb(95, 95, 95);
+    width: 83%;
+    height: auto;
+    box-sizing: border-box;
+}
+
+.message-container {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    width: 225px;
+    background-color: black;
+    margin-left: -10px;
+
+}
+
+.list {
+    align-self: center;
+}
+
+.message-block {
+    list-style: none;
+    align-self: center;
+    width: 175px;
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 20px;
+}
+
+.sentClass {
+    background-color: blanchedalmond;
+}
+
+.receivedClass {
+    background-color: beige;
+}
+
+.closeButton {
+    background-color: grey;
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    /* padding: 5px 10px; */
+    padding: 5px 0;
+    padding-right: 20px;
+   
+}
+
+.closeButton button {
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: scroll;
+    height: 460px;
+}
+.messageNotFound{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: scroll;
+    height: 460px;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}

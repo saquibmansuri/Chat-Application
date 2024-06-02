@@ -1,0 +1,11 @@
+<div *ngFor="let user of users">
+    <li class="userList" [routerLinkActive]="'active'">
+        <a [routerLink]="[{ outlets: { chatOutlet: ['chat', user.id] } }]">
+            {{ user.name }}
+            <span *ngIf="getUnReadMessageCount(user.id) > 0" class="notification">
+                {{getUnReadMessageCount(user.id)}}
+            </span>
+        </a>  
+    </li>
+    <hr class="line">
+</div>

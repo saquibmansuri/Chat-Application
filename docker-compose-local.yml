@@ -1,0 +1,64 @@
+version: '3.9'
+services:
+  fe:
+    build: 
+      context: .
+      dockerfile: Frontend/frontend.Dockerfile
+    #image: ${FE_IMAGE}  #it will read image name from .env file
+    container_name: fecontainer
+    env_file:
+      - fe.env
+    restart: always
+    ports:
+      - "4200:80"
+    depends_on:
+      - be
+
+  be:
+    build: 
+      context: .
+      dockerfile: Backend/backend.Dockerfile
+    #image: ${BACKEND_IMAGE}  #it will read image name from .env file
+    container_name: becontainer
+    env_file:
+      - be.env
+    restart: always
+    ports:
+      - "7218:80"
+    depends_on:
+      - mssqldb
+    
+  mssqldb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: mssqldbcontainer
+    environment:
+      SA_PASSWORD: "hitherefolks@007"
+      ACCEPT_EULA: "Y"
+    restart: always 
+    ports:
+      - "14330:1433"
+    volumes:
+      - mssql_data:/var/lib/mssql/data
+
+volumes:
+  mssql_data:
+    driver: local
+    
+
+###############################################################
+# IF YOUR APPLICATION SUPPOSTS POSTGRESQL THEN USE THIS
+#   postgresqldb:
+#     image: postgres
+#     container_name: dbcontainer
+#     restart: always
+#     environment:
+#       POSTGRES_DB: mydatabase
+#       POSTGRES_USER: user
+#       POSTGRES_PASSWORD: password
+#     ports:
+#       - "54320:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:

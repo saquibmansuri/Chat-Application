@@ -1,0 +1,56 @@
+<div class="container">
+    <h2>Request Logs</h2>
+  
+    <div class="form-group">
+      <label for="timeframe">Select Timeframe:</label>
+      <select class="form-control" id="timeframe" [(ngModel)]="selectedTimeframe" (change)="onTimeframeChange()">
+        <option value="5">Last 5 mins</option>
+        <option value="10">Last 10 mins</option>
+        <option value="30">Last 30 mins</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    <ng-container *ngIf="selectedTimeframe === 'custom'">
+      <div class="form-group">
+        <label for="customStartTime">Start Time:</label>
+        <input type="datetime-local" class="form-control" id="customStartTime" [(ngModel)]="customStartTime">
+      </div>
+      <div class="form-group">
+        <label for="customEndTime">End Time:</label>
+        <input type="datetime-local" class="form-control" id="customEndTime" [(ngModel)]="customEndTime">
+      </div>
+      <div>
+        <button (click)="onCustomSelect()" class="submit-button">Fetch Logs</button> 
+      </div>
+    </ng-container>
+
+  <div class="form-group checkbox">
+    <label>Select Columns to Show:</label>
+    <div class="form-check" *ngFor="let column of selectedColumns">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="columnVisibility[column]" [id]="column">
+      <label class="form-check-label" [for]="column">{{ column }}</label>
+    </div>
+  </div>
+  
+
+    
+    <table class="table">
+      <thead>
+        <tr>
+          <th *ngIf="columnVisibility['logId']">Log ID</th>
+      <th *ngIf="columnVisibility['ipAddress']">IP Address</th>
+      <th *ngIf="columnVisibility['requestBody']">Request Body</th>
+      <th *ngIf="columnVisibility['timeStamp']">TimeStamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td *ngIf="columnVisibility['logId']">{{ log.logId }}</td>
+          <td *ngIf="columnVisibility['ipAddress']">{{ log.ipAddress }}</td>
+          <td *ngIf="columnVisibility['requestBody']">{{ log.requestBody }}</td>
+          <td *ngIf="columnVisibility['timeStamp']">{{ log.timeStamp }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
