@@ -1,0 +1,38 @@
+<nav class="navBar"><button (click)="onLogout()" class="button">Logout</button></nav>
+<div class="search-bar">
+    <div class="userName">Hi, {{user_name}}</div>
+    <div class="search">
+        <form [formGroup]="searchForm">
+            <input formControlName="searchInput" />
+            <button (click) = "onSearch()">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="userDash">
+    <div *ngIf = "!isSearching">
+        <div class="userList">
+            <app-user-list></app-user-list>
+        </div>
+    </div>
+    <div *ngIf = "isSearching" class="message-container">
+        <div class="closeButton">
+            <button (click) = "onClose()">Close</button>
+        </div>
+        <div class="messages" *ngIf="matchingMessages.length > 0">
+            <div *ngFor="let message of matchingMessages" class="list">
+                <li [ngClass]="['message-block', message.senderId == loggedInUserId ? 'sentClass' : 'receivedClass']">
+                    {{message.content}}
+                </li>
+            </div>
+        </div>
+        <div *ngIf="matchingMessages.length === 0" class="messageNotFound">
+                No Matches found
+        </div>
+       
+        
+    </div>
+    <div class="chat">
+        <router-outlet name="chatOutlet"></router-outlet>
+    </div>
+</div>

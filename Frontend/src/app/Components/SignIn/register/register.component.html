@@ -1,0 +1,21 @@
+    <div class="signup">
+        <h4>Create your Account</h4>
+        <form action="" [formGroup]="registerForm">
+            <input type="text" placeholder="Name" formControlName="name">
+            <small *ngIf="registerForm.controls['name'].dirty  && registerForm.hasError('required', 'name')"
+                style="color: red;">*Name is required</small>
+
+
+            <input type="email" placeholder="Email address" formControlName="email">
+            <small *ngIf="registerForm.controls['email'].dirty  && registerForm.hasError('required', 'email')"
+                style="color: red;">*email is required</small>
+
+
+            <input type="password" placeholder="Password" formControlName="password">
+            <small *ngIf="registerForm.controls['password'].dirty  && registerForm.hasError('required', 'password')"
+                style="color: red;">*password is required</small>
+
+            <button type="submit" (click)="submitForm()">Continue</button>
+        </form>
+        <p>Already have an account? <span><a [routerLink]="['/login']">Login</a></span></p>
+    </div>
