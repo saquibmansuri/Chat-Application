@@ -1,0 +1,44 @@
+version: '3.9'
+services:
+
+  frontend_blue:
+    image: 
+    env_file:
+      - fe.env
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "4200:80"
+
+  frontend_green:
+    image: 
+    env_file:
+      - fe.env
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "4201:80"
+    
+###################################
+
+  backend_blue:
+    image: 
+    env_file:
+      - be.env
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "7218:80"
+
+  backend_green:
+    image: 
+    env_file:
+      - be.env
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "7219:80"
