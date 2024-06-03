@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MessageResponse , SendMessageRequest, Message, EditMessageRequest } from './model';
+import { environment } from 'src/environment';
 
 
 @Injectable({
@@ -8,7 +9,7 @@ import { MessageResponse , SendMessageRequest, Message, EditMessageRequest } fro
 })
 export class MessageService {
 
-  private baseUrl: string = "http://localhost:7218/api/"
+  private baseUrl: string = environment.base_url
 
   constructor(private http: HttpClient) { }
 

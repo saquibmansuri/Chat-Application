@@ -35,6 +35,9 @@ Chat Application (Backend: Dotnet , Frontend: Angular)
     - For frontend - "fe.env"
     - for backend  - "be.env"
 
+4. Update backend url in Chat-Application\Frontend\src\environment.ts
+    - For local - http://localhost:7218/api
+
 4. Setup docker containers for frontend, backend and database
     - Note: For both windows and linux, open terminal and execute the following command
     - ` docker compose -f docker-compose-local.yml up -d `
