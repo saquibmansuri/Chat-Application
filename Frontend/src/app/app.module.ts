@@ -46,7 +46,7 @@ import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
           {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider(
-              '382957319052-aln56kdcvg6r9rb8im5pcrrft8v43o2p.apps.googleusercontent.com', {
+              '207214300515-nk7v3nf72f9sqlqo0f2s54bkumof77n2.apps.googleusercontent.com', {
               }
             )
           },
