@@ -5,7 +5,7 @@ name: Deploy Backend & Frontend
 on:
   workflow_dispatch:
   push:
-    branches: [ feature-deploy-app ]
+    branches: [ main ]
 env:
   DOCKER_REPOSITORY: chat-application  #Enter your repo name here
   VM_SSH_PORT: 22
@@ -56,7 +56,7 @@ jobs:
           script: |
             cd application
             # Update environment variables for backend project inside this github secret before running the pipeline
-            printf '%s\n' "${{ secrets.BACKEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/be.env
+            echo "${{ secrets.BACKEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/be.env
 
       - name: Updating Env Variables From Github Secrets Into Frontend Env File On VM
         uses: appleboy/ssh-action@v0.1.7
@@ -68,7 +68,7 @@ jobs:
           script: |
             cd application
             # Update environment variables for frontend project inside this github secret before running the pipeline
-            printf '%s\n' "${{ secrets.FRONTEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/fe.env
+            echo "${{ secrets.FRONTEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/fe.env
   
       - name: Update Docker Image And Environment Variables For The Backend Swarm Services In VM
         uses: appleboy/ssh-action@v0.1.7
