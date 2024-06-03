@@ -96,7 +96,7 @@ namespace RealTimeChatApi
                 {
                     builder.AllowAnyOrigin()
                            .AllowAnyHeader()
-                           .AllowAnyMethod()
+                           .AllowAnyMethod();
                 });
             });
 
