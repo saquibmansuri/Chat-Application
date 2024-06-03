@@ -97,7 +97,6 @@ namespace RealTimeChatApi
                     builder.AllowAnyOrigin()
                            .AllowAnyHeader()
                            .AllowAnyMethod()
-                           .AllowCredentials();
                 });
             });
 
