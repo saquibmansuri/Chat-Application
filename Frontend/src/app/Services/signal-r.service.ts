@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { environment } from 'src/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class SignalRService {
   constructor(private auth: AuthService) {
 
     this.connection = new HubConnectionBuilder()
-      .withUrl(`http://localhost:7218/hub/chat?access_token=${this.loggedInUserToken}`)
+      .withUrl(`${environment.base_url}/hub/chat?access_token=${this.loggedInUserToken}`)
       .build();
   }
 

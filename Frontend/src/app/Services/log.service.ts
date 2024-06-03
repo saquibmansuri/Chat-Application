@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Log } from 'src/app/Components/logs/model';
+import { environment } from 'src/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LogService {
 
-  private baseUrl: string = "http://localhost:7218/api/"
+  private baseUrl: string = environment.base_url
   constructor(private http: HttpClient) { }
   
   getLogs(selectedTimeframe: string, startTime : string, endTime : string) {

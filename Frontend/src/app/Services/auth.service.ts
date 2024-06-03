@@ -4,6 +4,7 @@ import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '
 import { SocialAuthService, SocialUser } from "@abacritt/angularx-social-login";
 import { Subject } from 'rxjs';
 import { ExternalAuthDto } from '../Components/SignIn/login/model';
+import { environment } from 'src/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class AuthService {
   public authChangeSub = new Subject<boolean>();
   public extAuthChangeSub = new Subject<SocialUser>();
 
-  private baseUrl: string = "http://localhost:7218/api/"
+  private baseUrl: string = environment.base_url
 
 
   constructor(private http: HttpClient, private externalAuthService: SocialAuthService) {
