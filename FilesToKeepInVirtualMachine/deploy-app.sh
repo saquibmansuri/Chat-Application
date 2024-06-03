@@ -92,3 +92,18 @@ echo "Deployment Summary:"
 for service in "${!service_statuses[@]}"; do
   echo "$service: ${service_statuses[$service]}"
 done
+
+#################################################
+
+# -- Microsoft Teams Webhook Notification Start --
+# Prepare JSON payload for webhook notification
+json_payload="{\"text\": \"Environment Name: $stack"
+for service in "${!service_statuses[@]}"; do
+  json_payload+="  ||  \\n$service: ${service_statuses[$service]}"
+done
+json_payload+="\"}"
+
+# Send JSON payload to webhook
+# echo "Notifying On Teams"
+# curl -H "Content-Type: application/json" -d "$json_payload" <microsoft_teams_channel_webhook_url>
+# -- Webhook Notification End --
