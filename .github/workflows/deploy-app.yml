@@ -1,0 +1,113 @@
+# DEPLOYING BACKEND & FRONTEND ON LINUX VIRTUAL MACHINE WITH BLUE GREEN DEPLOYMENT STRATEGY
+
+name: Deploy Backend & Frontend
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+env:
+  DOCKER_REPOSITORY: chat-application  #Enter your repo name here
+  VM_SSH_PORT: 22
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET Core For Backend
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "7.0.x"  #Make sure to specify the correct version of your dotnet project
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}  # This token can be created from dockerhub account settings
+
+      - name: Build, Tag and Push Backend Docker Image to DockerHub Repository
+        id: build-image-backend
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:backend-${{ env.IMAGE_TAG }} -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:backend-latest -f Backend/backend.Dockerfile .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:backend-${{ env.IMAGE_TAG }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:backend-latest
+          echo "backendimage=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:backend-${{ env.IMAGE_TAG }}" >> $GITHUB_OUTPUT
+
+      - name: Build, Tag and Push Frontend Docker Image to DockerHub Repository
+        id: build-image-frontend
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:frontend-${{ env.IMAGE_TAG }} -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:frontend-latest -f Frontend/frontend.Dockerfile .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:frontend-${{ env.IMAGE_TAG }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:frontend-latest
+          echo "frontendimage=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_REPOSITORY }}:frontend-${{ env.IMAGE_TAG }}" >> $GITHUB_OUTPUT
+          
+      - name: Updating Env Variables From Github Secrets Into Backend Env File On VM
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: "ubuntu"
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: ${{ env.VM_SSH_PORT }}
+          script: |
+            cd application
+            # Update environment variables for backend project inside this github secret before running the pipeline
+            echo "${{ secrets.BACKEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/be.env
+
+      - name: Updating Env Variables From Github Secrets Into Frontend Env File On VM
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: "ubuntu"
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: ${{ env.VM_SSH_PORT }}
+          script: |
+            cd application
+            # Update environment variables for frontend project inside this github secret before running the pipeline
+            echo "${{ secrets.FRONTEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/fe.env
+  
+      - name: Update Docker Image And Environment Variables For The Backend Swarm Services In VM
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: "ubuntu"
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: ${{ env.VM_SSH_PORT }}
+          script: |
+            cd application
+            source update-services.sh
+            # The following line will call the update_service function inside the update-services.sh
+            # Syntax-  update_service "<stack_name>" "<service_name>" "<image_name>" "<env_file_name>"
+            update_service "app" "backend" "${{ steps.build-image-backend.outputs.backendimage }}" "be.env"
+
+      - name: Update Docker Image And Environment Variables For The Frontend Swarm Services In VM
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: "ubuntu"
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: ${{ env.VM_SSH_PORT }}
+          script: |
+            cd application
+            source update-services.sh
+            # The following line will call the update_service function inside the update-services.sh
+            # Syntax-  update_service "<stack_name>" "<service_name>" "<image_name>" "<env_file_name>"
+            update_service "app" "frontend" "${{ steps.build-image-frontend.outputs.frontendimage }}" "fe.env"
+  
+      - name: Rolling Out Updates in VM
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: "ubuntu"
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: ${{ env.VM_SSH_PORT }}
+          script: |
+            cd application
+            # This script will deploy the new version for both frontend and backend, verify healthcheck and rollback if healthcheck fails
+            sudo chmod +x deploy-app.sh
+            sudo ./deploy-app.sh
+            sudo docker system prune -af
