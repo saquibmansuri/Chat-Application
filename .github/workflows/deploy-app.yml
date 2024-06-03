@@ -12,7 +12,7 @@ env:
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -56,7 +56,7 @@ jobs:
           script: |
             cd application
             # Update environment variables for backend project inside this github secret before running the pipeline
-            echo "${{ secrets.BACKEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/be.env
+            printf '%s\n' "${{ secrets.BACKEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/be.env
 
       - name: Updating Env Variables From Github Secrets Into Frontend Env File On VM
         uses: appleboy/ssh-action@v0.1.7
@@ -68,7 +68,7 @@ jobs:
           script: |
             cd application
             # Update environment variables for frontend project inside this github secret before running the pipeline
-            echo "${{ secrets.FRONTEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/fe.env
+            printf '%s\n' "${{ secrets.FRONTEND_ENVIRONMENT_VARIABLES }}" > /home/ubuntu/application/fe.env
   
       - name: Update Docker Image And Environment Variables For The Backend Swarm Services In VM
         uses: appleboy/ssh-action@v0.1.7
