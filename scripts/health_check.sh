@@ -5,7 +5,7 @@
 health_check_url=$1
 
 # Initial delay to allow the application to start
-echo "Waiting for 2 minutes to allow the app to load..."
+echo "Waiting for 5 minutes to allow the app to start and stabilize..."
 sleep 300
 
 # Retry logic
