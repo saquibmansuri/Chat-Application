@@ -23,7 +23,7 @@ jobs:
           dotnet-version: '7.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ./Backend/RealTimeChatApi.sln --configuration Release
 
       - name: Dotnet publish
         run: dotnet publish ./Backend/RealTimeChatApi.csproj -c Release -o /tmp/backendapp
