@@ -6,7 +6,7 @@ name: Build and Deploy Backend on Azure (Blue-Green Slot Based Deployment)
 on:
   push:
     branches:
-      - feature-bluegreen-azure
+      - deploy-bluegreen-azure
   workflow_dispatch:
 
 jobs:
