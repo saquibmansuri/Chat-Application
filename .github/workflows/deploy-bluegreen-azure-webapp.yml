@@ -63,7 +63,6 @@ jobs:
 
       - name: Health Check
         run: |
-          ls -al scripts/  # List contents to debug and confirm presence of script
           chmod +x scripts/health_check.sh  # Make script executable
           scripts/health_check.sh https://dotnetchatapplication-staging.azurewebsites.net/swagger/index.html
 
@@ -90,6 +89,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-to-production-slot
     steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Health Check
         run: |
           chmod +x scripts/health_check.sh
