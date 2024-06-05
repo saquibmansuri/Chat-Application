@@ -58,9 +58,10 @@ jobs:
     needs: deploy-to-staging
     steps:
       - name: Health Check
-        run: 
-            chmod +x ./scripts/health_check.sh
-            ./scripts/health_check.sh https://dotnetchatapplication-staging.azurewebsites.net/swagger/index.html
+      run: |
+        ls -al ./scripts/  # List contents to debug and confirm presence of script
+        chmod +x ./scripts/health_check.sh  # Make script executable
+        ./scripts/health_check.sh https://dotnetchatapplication-staging.azurewebsites.net/swagger/index.html
 
   deploy-to-production:
     runs-on: ubuntu-latest
@@ -86,6 +87,6 @@ jobs:
     needs: deploy-to-production
     steps:
       - name: Health Check
-        run: 
-            chmod +x ./scripts/health_check.sh
-            ./scripts/health_check.sh https://dotnetchatapplication.azurewebsites.net/swagger/index.html
+      run: |
+        chmod +x ./scripts/health_check.sh
+        ./scripts/health_check.sh https://dotnetchatapplication-staging.azurewebsites.net/swagger/index.html
